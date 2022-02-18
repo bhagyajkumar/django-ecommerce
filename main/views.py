@@ -1,21 +1,14 @@
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from razorpay.resources import payment
 from .models import Cart, Product, ProductOrder
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-import razorpay
 from django.conf import settings
-
-razorpay_client = razorpay.Client(
-    auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET)
-)
-
 
 def home_page(request):
     products = Product.objects.all()
-    cart_items = Cart.objects.get(user=request.user).items.all()
+    cart_items = Cart.objects.get_or_create(user=request.user)[0].items.all()
     cart_count = 0
     for i in cart_items:
         cart_count += i.count
@@ -87,30 +80,30 @@ def set_placeholder_data(request):
     return HttpResponse("data saved")
 
 
-def checkout(request):
-    cart_items = Cart.objects.get(user=request.user).items.all()
-    amount = 0
-    for i in cart_items:
-        amount += i.product.price * i.count
-    amount = int(amount * 100)
-    currency = "INR"
-    razorpay_order = razorpay_client.order.create(
-        {
-            "amount": amount,
-            "currency": currency,
-            "payment_capture": "0",
-        }
-    )
-    razorpay_order_id = razorpay_order['id']
-    callback_url = "paymenthandler/"
+# def checkout(request):
+#     cart_items = Cart.objects.get(user=request.user).items.all()
+#     amount = 0
+#     for i in cart_items:
+#         amount += i.product.price * i.count
+#     amount = int(amount * 100)
+#     currency = "INR"
+#     razorpay_order = razorpay_client.order.create(
+#         {
+#             "amount": amount,
+#             "currency": currency,
+#             "payment_capture": "0",
+#         }
+#     )
+#     razorpay_order_id = razorpay_order['id']
+#     callback_url = "paymenthandler/"
 
-    context = {
-        "razorpay_order_id": razorpay_order_id,
-        "razorpay_merchant_key": settings.RAZOR_KEY_ID,
-        "razorpay_amount": amount,
-        "currency": "INR",
-        "callback_url": callback_url,
-        "amount_rs": amount / 100
-    }
+#     context = {
+#         "razorpay_order_id": razorpay_order_id,
+#         "razorpay_merchant_key": settings.RAZOR_KEY_ID,
+#         "razorpay_amount": amount,
+#         "currency": "INR",
+#         "callback_url": callback_url,
+#         "amount_rs": amount / 100
+#     }
 
-    return render(request, "main/payment.html", context)
+#     return render(request, "main/payment.html", context)

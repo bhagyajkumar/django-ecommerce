@@ -8,15 +8,34 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'cart_page' %}">Cart
+                    <a class="nav-link active" aria-current="page" href="#">Cart
                         <span class="badge bg-success">{{ cart_count }}</span>
                     </a>
-
                 </li>
             </ul>
+            <div class="d-flex">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if user.is_authenticated %}
+                            {{ user.username }}
+                        {% else %}
+                            Account
+                        {% endif %}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                        {% else %}
+                        <li><a class="dropdown-item" href="#">Signup</a></li>
+                        <li><a class="dropdown-item" href="#">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </div>>
+            </div>
         </div>
     </div>
 </nav>
