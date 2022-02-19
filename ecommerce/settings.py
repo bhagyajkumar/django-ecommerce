@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    "accounts",
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +62,7 @@ ROOT_URLCONF = 'ecommerce.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates", ],
+        'DIRS': [BASE_DIR/"main"/"templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,3 +139,5 @@ MEDIA_URL = "media/"
 RAZOR_KEY_ID = os.environ.get("RAZOR_KEY_ID")
 
 RAZOR_KEY_SECRET = os.environ.get("RAZOR_KEY_SECRET")
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

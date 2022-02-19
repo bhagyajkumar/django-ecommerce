@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -8,11 +9,12 @@ from django.conf import settings
 
 def home_page(request):
     products = Product.objects.all()
-    cart_items = Cart.objects.get_or_create(user=request.user)[0].items.all()
     cart_count = 0
-    for i in cart_items:
-        cart_count += i.count
-    return render(request, "main/home.html", {"products": products, "cart_count": cart_count})
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.get_or_create(user=request.user)[0].items.all()
+        for i in cart_items:
+            cart_count += i.count
+    return render(request, "home.html", {"products": products, "cart_count": cart_count})
 
 
 @login_required
@@ -23,11 +25,13 @@ def add_to_cart(request):
 
 
 def view_cart(request):
+    if not request.user.is_authenticated:
+        return HttpResponse("Please login to access cart")
     cart_items = Cart.objects.get(user=request.user).items.all()
     cart_count = 0
     for i in cart_items:
         cart_count += i.count
-    return render(request, "main/cart.html", {"cart_items": cart_items, "cart_count": cart_count})
+    return render(request, "cart.html", {"cart_items": cart_items, "cart_count": cart_count})
 
 
 # gotta handle 404

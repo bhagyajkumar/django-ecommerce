@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login Here
+{% endblock %}  
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% include "includes/navbar.html" %}
+<div class="container">
+    <form method="post" class="from-group">
+        <h2>Signin</h2>
+        {% csrf_token %}
+        {{form|crispy}}
+        <p>Don't have an accoount? Create one <a href="{% url 'signup' %}">here</a></p>
+        <button type="submit" class="btn btn-success">Login</button>
+    </form>
+</div>
+{% endblock %}
