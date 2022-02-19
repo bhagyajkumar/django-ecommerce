@@ -141,3 +141,7 @@ RAZOR_KEY_ID = os.environ.get("RAZOR_KEY_ID")
 RAZOR_KEY_SECRET = os.environ.get("RAZOR_KEY_SECRET")
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY")
+
+STRIPE_PRIVATE_KEY = os.environ.get("STRIPE_PRIVATE_KEY")
