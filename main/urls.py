@@ -10,6 +10,6 @@ urlpatterns = [
          views.increment_item, name="increment_item"),
     path("cart/decrement/<product_id>",
          views.decrement_item, name="decrement_item"),
-#     path("checkout", views.checkout, name="checkout")
+    path("checkout", views.checkout, name="checkout"),
     path("add-data/", views.set_placeholder_data)
 ]

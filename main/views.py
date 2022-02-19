@@ -1,3 +1,4 @@
+import json
 from django.http import Http404
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -6,6 +7,7 @@ from .models import Cart, Product, ProductOrder
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
+import stripe
 
 
 def home_page(request):
@@ -72,7 +74,7 @@ def set_placeholder_data(request):
     import requests
 
     data = requests.get("https://fakestoreapi.com/products").json()
-    for d in data:
+    for d in data[0:5]:
         title = d["title"]
         price = d["price"]
         description = d["description"]
@@ -85,5 +87,20 @@ def set_placeholder_data(request):
     return HttpResponse("data saved")
 
 
+@login_required
 def checkout(request):
-    pass
+    cart_items = Cart.objects.get(user=request.user).items.all()
+    stripe.api_key = settings.STRIPE_PRIVATE_KEY
+    checkout_session = stripe.checkout.Session.create(
+        payment_method_types = ["card"],
+        line_items = [{"price": item.product.stripe_price_id, "quantity": item.count} for item in cart_items],
+        mode="payment",
+        success_url="http://12.0.0.1:8000/payment/success",
+        cancel_url = "http://12.0.0.1:8000/payment/cancel"
+    )
+    # line_items = [{"price": item.product.stripe_price_id, "quantity": item.count} for item in cart_items]
+    context = {
+        "session_id": checkout_session.id,
+        "stripe_public_key": settings.STRIPE_PUBLIC_KEY
+    }
+    return render(request, "payment.html", context)

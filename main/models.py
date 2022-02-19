@@ -19,7 +19,7 @@ class Product(models.Model):
     def save(self, *args, **kwargs) -> None:
         stripe.api_key = settings.STRIPE_PRIVATE_KEY
         stripe_product = stripe.Product.create(name=self.title)
-        stripe_price = stripe.Price.create(currency="usd", product=stripe_product.id, unit_amount=int(self.price * 100))
+        stripe_price = stripe.Price.create(currency="inr", product=stripe_product.id, unit_amount=int(self.price * 100))
         self.stripe_product_id = stripe_product.id
         self.stripe_price_id = stripe_price.id
         return super().save(*args, **kwargs)

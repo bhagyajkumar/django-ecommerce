@@ -14,7 +14,7 @@
                 <h5 class="card-title">{{ product.title }}</h5>
             </div>
             <div class="card-footer">
-                <h3>${{ product.price }}</h3>
+                <h3>₹{{ product.price }}</h3>
                 <a href="{% url 'increment_item' product_id=product.id %}" class="btn btn-primary">Add to Cart</a>
             </div>
         </div>
