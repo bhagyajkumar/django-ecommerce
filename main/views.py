@@ -95,12 +95,16 @@ def checkout(request):
         payment_method_types = ["card"],
         line_items = [{"price": item.product.stripe_price_id, "quantity": item.count} for item in cart_items],
         mode="payment",
-        success_url="http://12.0.0.1:8000/payment/success",
-        cancel_url = "http://12.0.0.1:8000/payment/cancel"
+        success_url="http://127.0.0.1:8000/payment/success",
+        cancel_url = "http://127.0.0.1:8000/payment/cancel"
     )
+    price = 0
+    for item in cart_items:
+        price += item.count * item.product.price
     # line_items = [{"price": item.product.stripe_price_id, "quantity": item.count} for item in cart_items]
     context = {
         "session_id": checkout_session.id,
-        "stripe_public_key": settings.STRIPE_PUBLIC_KEY
+        "stripe_public_key": settings.STRIPE_PUBLIC_KEY,
+        "amount_rs": price
     }
     return render(request, "payment.html", context)
