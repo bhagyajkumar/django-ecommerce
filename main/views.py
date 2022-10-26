@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 import json
 from django.http import Http404
 from django.http.response import HttpResponse, HttpResponseRedirect
@@ -7,6 +8,7 @@ from .models import Cart, Product, ProductOrder
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 import stripe
 
 
@@ -108,3 +110,25 @@ def checkout(request):
         "amount_rs": price
     }
     return render(request, "payment.html", context)
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError as e:
+        print("some error")
+        return HttpResponse(400)
+    except stripe.error.SignatureVerificationError as e:
+        print("signature error")
+        return HttpResponse(400)
+    
+    print(event)
+    
+    HttpResponse(200)

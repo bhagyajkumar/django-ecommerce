@@ -11,5 +11,6 @@ urlpatterns = [
     path("cart/decrement/<product_id>",
          views.decrement_item, name="decrement_item"),
     path("checkout", views.checkout, name="checkout"),
-    path("add-data/", views.set_placeholder_data)
+    path("add-data/", views.set_placeholder_data),
+    path("webhooks/stripe/", views.stripe_webhook, name="stripe_webhook")
 ]
